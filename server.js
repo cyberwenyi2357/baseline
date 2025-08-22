@@ -25,9 +25,10 @@ app.get("/token", async (req, res) => {
           Authorization: `Bearer ${apiKey}`,
           "Content-Type": "application/json",
         },
+        
         body: JSON.stringify({
           model: "gpt-4o-realtime-preview-2025-06-03",
-          voice: "verse",
+          modalities: ['text'],
         }),
       },
     );

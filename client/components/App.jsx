@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import logo from "/assets/openai-logomark.svg";
 import EventLog from "./EventLog";
 import SessionControls from "./SessionControls";
-import ToolPanel from "./ToolPanel";
 
 export default function App() {
   const [isSessionActive, setIsSessionActive] = useState(false);
@@ -119,7 +118,13 @@ export default function App() {
     };
 
     sendClientEvent(event);
-    sendClientEvent({ type: "response.create" });
+    sendClientEvent({
+      type: "response.create",
+      response: {
+        modalities: ["text"],
+        instructions: "Please respond in English only."
+      },
+    });
   }
 
   // Attach event listeners to the data channel when a new one is created
@@ -152,7 +157,7 @@ export default function App() {
         </div>
       </nav>
       <main className="absolute top-16 left-0 right-0 bottom-0">
-        <section className="absolute top-0 left-0 right-[380px] bottom-0 flex">
+        <section className="absolute top-0 left-0 right-0 bottom-0 flex">
           <section className="absolute top-0 left-0 right-0 bottom-32 px-4 overflow-y-auto">
             <EventLog events={events} />
           </section>
@@ -166,14 +171,6 @@ export default function App() {
               isSessionActive={isSessionActive}
             />
           </section>
-        </section>
-        <section className="absolute top-0 w-[380px] right-0 bottom-0 p-4 pt-0 overflow-y-auto">
-          <ToolPanel
-            sendClientEvent={sendClientEvent}
-            sendTextMessage={sendTextMessage}
-            events={events}
-            isSessionActive={isSessionActive}
-          />
         </section>
       </main>
     </>
