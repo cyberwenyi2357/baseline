@@ -1,5 +1,5 @@
+import React, { useState } from "react";
 import { ArrowUp, ArrowDown, MessageSquare } from "react-feather";
-import { useState } from "react";
 
 function Event({ event, timestamp }) {
   const [isExpanded, setIsExpanded] = useState(false);

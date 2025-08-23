@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import logo from "/assets/openai-logomark.svg";
 import EventLog from "./EventLog";
 import SessionControls from "./SessionControls";
@@ -12,7 +12,7 @@ export default function App() {
 
   async function startSession() {
     // Get a session token for OpenAI Realtime API
-    const tokenResponse = await fetch("/token");
+    const tokenResponse = await fetch("/api/token");
     const data = await tokenResponse.json();
     const EPHEMERAL_KEY = data.client_secret.value;
 
