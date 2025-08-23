@@ -41,22 +41,14 @@ function Event({ event, timestamp }) {
       </div>
       
       {/* 只在 response.text.done 时显示文本内容 */}
-      {isResponseTextDone && (event?.response?.output?.[0]?.text || "") && (
+      {isResponseTextDone && (event?.text || "") && (
         <div className="bg-white border-l-4 border-green-500 p-3 rounded-r-md shadow-sm">
           <div className="text-sm text-gray-700 leading-relaxed">
-            {event?.response?.output?.[0]?.text || ""}
+            {event?.text || ""}
           </div>
         </div>
       )}
-      
-      {/* 原始 JSON 数据 */}
-      <div
-        className={`text-gray-500 bg-gray-200 p-2 rounded-md overflow-x-auto ${
-          "block"
-        }`}
-      >
-        <pre className="text-xs">{JSON.stringify(event, null, 2)}</pre>
-      </div>
+    
     </div>
   );
 }
