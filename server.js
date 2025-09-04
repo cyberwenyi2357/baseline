@@ -15,7 +15,7 @@ const vite = await createViteServer({
 app.use(vite.middlewares);
 
 // API route for token generation
-app.get("/token", async (req, res) => {
+app.get("/api/token", async (req, res) => {
   try {
     const response = await fetch(
       "https://api.openai.com/v1/realtime/sessions",

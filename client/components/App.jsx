@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import logo from "/assets/openai-logomark.svg";
 import EventLog from "./EventLog";
 import SessionControls from "./SessionControls";
+import TextEditor from "./TextEditor";
 
 export default function App() {
   const [isSessionActive, setIsSessionActive] = useState(false);
@@ -11,10 +12,21 @@ export default function App() {
   const audioElement = useRef(null);
 
   async function startSession() {
-    // Get a session token for OpenAI Realtime API
-    const tokenResponse = await fetch("/api/token");
-    const data = await tokenResponse.json();
-    const EPHEMERAL_KEY = data.client_secret.value;
+    try {
+      // Get a session token for OpenAI Realtime API
+      const tokenResponse = await fetch("/api/token");
+      
+      if (!tokenResponse.ok) {
+        throw new Error(`HTTP error! status: ${tokenResponse.status}`);
+      }
+      
+      const data = await tokenResponse.json();
+      
+      if (!data.client_secret || !data.client_secret.value) {
+        throw new Error('Invalid response format from token endpoint');
+      }
+      
+      const EPHEMERAL_KEY = data.client_secret.value;
 
     // Create a peer connection
     const pc = new RTCPeerConnection();
@@ -56,6 +68,10 @@ export default function App() {
     await pc.setRemoteDescription(answer);
 
     peerConnection.current = pc;
+    } catch (error) {
+      console.error('Failed to start session:', error);
+      alert(`Failed to start session: ${error.message}. Please check if the OpenAI API key is configured.`);
+    }
   }
 
   // Stop current session, clean up peer connection and data channel
@@ -156,12 +172,13 @@ export default function App() {
           <h1>realtime console</h1>
         </div>
       </nav>
-      <main className="absolute top-16 left-0 right-0 bottom-0">
-        <section className="absolute top-0 left-0 right-0 bottom-0 flex">
-          <section className="absolute top-0 left-0 right-0 bottom-32 px-4 overflow-y-auto">
+      <main className="absolute top-16 left-0 right-0 bottom-0 flex">
+        {/* Left side - Console (50%) */}
+        <section className="w-1/2 flex flex-col">
+          <section className="flex-1 px-4 overflow-y-auto">
             <EventLog events={events} />
           </section>
-          <section className="absolute h-32 left-0 right-0 bottom-0 p-4">
+          <section className="h-32 p-4 border-t border-gray-200">
             <SessionControls
               startSession={startSession}
               stopSession={stopSession}
@@ -171,6 +188,11 @@ export default function App() {
               isSessionActive={isSessionActive}
             />
           </section>
+        </section>
+        
+        {/* Right side - Text Editor (50%) */}
+        <section className="w-1/2">
+          <TextEditor />
         </section>
       </main>
     </>
